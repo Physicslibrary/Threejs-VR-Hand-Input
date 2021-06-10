@@ -19,6 +19,8 @@ Important - Javascript codes for this project are dependent on "WebXR Hand Input
 
 Open Oculus Browser to link and "Enter VR" with index finger-thumb click. No controllers as the codes are hand tracking only.<br>
 
+[https://physicslibrary.github.io/Threejs-VR-Hand-Input/examples/threejs_vr_hand-input.html](https://physicslibrary.github.io/Threejs-VR-Hand-Input/examples/threejs_vr_hand_input.html)
+
 ## 2. Threejs VR Hand Input Palm-Up Gesture<br>
 
 <img src="images/2.gif" width="360">
