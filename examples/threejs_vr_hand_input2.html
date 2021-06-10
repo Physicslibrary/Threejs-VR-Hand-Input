@@ -1,0 +1,202 @@
+<!--
+
+threejs_vr_hand_input2.html
+
+https://github.com/Physicslibrary/Threejs-VR-Hand-Input
+
+MIT License
+
+Copyright (c) 2021 Hartwell Fong
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+June 2021
+
+System Requirements
+
+Oculus Quest (tested Quest 1, no controllers)
+
+Oculus Browser >15.4 (Quest update 29.0)
+
+Not sure if Oculus Browser needs to be configured for WebXR like in the early days.
+If examples do not work, type "chrome://flags" in Oculus Browser and search for "webxr".
+"WebXR experiences with hand and joints tracking" and "WebXR Layers" are enabled.
+
+Threejs-VR-Hand-Input uses a subset of three.js r129 to start VR with hand and joints tracking.
+
+Important - Javascript codes for this project are dependent on "WebXR Hand Input Module - Level 1", as of today,
+is an unstable API (https://www.w3.org/TR/webxr-hand-input-1/). Codes may stop working after Oculus Browser or threejs update.
+Oculus' experimental WebXR hand tracking release in February 2020 and three.js support have been fantastic.
+
+Credits
+
+https://threejs.org/
+
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>three.js vr Hand Input 2</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+		<link type="text/css" rel="stylesheet" href="main.css">
+	</head>
+	<body>
+
+	<div id="info">
+	<a href="https://threejs.org" target="_blank" rel="noopener">three.js</a> VR Hand Input 2<br/>
+	(Oculus Browser 15.4+, no controllers, use hand tracking to enter VR)
+	</div>
+
+<script type="module">
+    
+import * as THREE from '../build/three.module.js';
+import { VRButton } from './jsm/webxr/VRButton.js';
+import { OculusHandModel } from './jsm/webxr/OculusHandModel.js';
+import { createText } from './jsm/webxr/Text2D.js';
+
+var container;
+var camera, scene, renderer;
+var hand1, hand2;
+
+var geometry, end1, end2, box, object;
+
+var distance=0;
+var distance_text;
+let delay = 0;
+
+init();
+animate();
+
+function init() {
+
+    scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x505050);
+
+	  camera = new THREE.PerspectiveCamera( 50, window.innerWidth / window.innerHeight, 0.1, 10 );
+	  camera.position.set( 0, 1.6, 3 );
+	
+	  // add a floor
+
+	  var color = new THREE.Color(0x8ec683);
+	  var floor = new THREE.GridHelper(8,8,color,color);
+	  scene.add(floor);
+
+	  scene.add( new THREE.HemisphereLight( 0x606060, 0x404040 ) );
+
+	  const light = new THREE.DirectionalLight( 0xffffff );
+	  light.position.set( 1, 1, -1 ).normalize();
+	  scene.add( light );
+
+	  renderer = new THREE.WebGLRenderer( { antialias: true } );
+	  renderer.setPixelRatio( window.devicePixelRatio );
+	  renderer.setSize( window.innerWidth, window.innerHeight );
+	  renderer.outputEncoding = THREE.sRGBEncoding;
+	  renderer.xr.enabled = true;
+
+	  document.body.appendChild(renderer.domElement);
+	  document.body.appendChild(VRButton.createButton(renderer));
+
+	  // hand 1
+
+	  hand1 = renderer.xr.getHand( 0 );
+	  hand1.add( new OculusHandModel( hand1 ) );
+	  scene.add( hand1 );
+
+	  // hand 2
+
+	  hand2 = renderer.xr.getHand( 1 );
+	  hand2.add( new OculusHandModel( hand2 ) );
+	  scene.add( hand2 );
+
+	  var text = createText('Threejs WebXR Hand Tracking', 0.05);
+	  text.position.set( 0, 1.5, -1 );
+	  scene.add( text );
+	  var text = createText('Vertical distance between red cubes', 0.05);
+	  text.position.set( 0, 1.4, -1 );
+	  scene.add( text );
+		
+	  object = new THREE.Object3D();
+	  scene.add(object);
+
+	  geometry = new THREE.BoxBufferGeometry(0.01,0.01,0.01);
+	  end1 = new THREE.Mesh( geometry, new THREE.MeshBasicMaterial({color: 0xff0000}));
+	  end1.material.wireframe = true;
+	  end1.position.y = -0.02;
+	  object.add(end1);
+	
+	  end2 = new THREE.Mesh( geometry, new THREE.MeshBasicMaterial({color: 0xff0000}));
+	  end2.material.wireframe = true;
+	  end2.position.y = -0.25;
+	  object.add(end2);
+
+	  box = new THREE.EdgesGeometry(new THREE.BoxBufferGeometry(0.1,0.1,0.1));
+	  box = new THREE.LineSegments(box,new THREE.LineBasicMaterial({color: 0xffff00}));
+	  box.position.x = -0.15;
+	  box.position.y = -0.15;
+	  box.position.z = -0.05;
+	  box.visible = false;
+	  object.add(box);
+
+	}
+	
+function animate() {
+
+		renderer.setAnimationLoop( render );
+
+	}
+
+function render() {
+
+		renderer.render( scene, camera );
+
+		object.position.x = hand2.joints['wrist'].position.x;
+		object.position.y = hand2.joints['wrist'].position.y;
+		object.position.z = hand2.joints['wrist'].position.z;
+		object.quaternion.y = hand2.joints['wrist'].quaternion.y;
+		object.quaternion.w = hand2.joints['wrist'].quaternion.w;
+		object.quaternion.x = hand2.joints['wrist'].quaternion.x;
+		object.quaternion.z = hand2.joints['wrist'].quaternion.z;
+
+		distance = end2.getWorldPosition().y - end1.getWorldPosition().y;
+		
+		if(distance > 0.20){
+			box.visible = true;
+			}
+			
+		if(distance < 0.20){
+			box.visible = false;
+			}
+  
+		if(delay > 10){
+		scene.remove(distance_text);
+		distance_text = createText(Math.round(100*distance).toString()+"cm",0.05);
+		distance_text.position.set( 0, 1.3, -1 );
+		scene.add(distance_text);
+		delay = 0;
+			}
+
+		delay += 1;
+
+		}
+		
+		</script>
+	</body>
+</html>
