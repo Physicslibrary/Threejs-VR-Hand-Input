@@ -27,6 +27,8 @@ Open Oculus Browser to link and "Enter VR" with index finger-thumb click. No con
 
 An example of left palm-up to make a box visible (open a menus or change variables). Distance between red cubes' y-positions decides when the palm is facing up.<br>
 
+[https://physicslibrary.github.io/Threejs-VR-Hand-Input/examples/threejs_vr_hand-input2.html](https://physicslibrary.github.io/Threejs-VR-Hand-Input/examples/threejs_vr_hand_input2.html)
+
 ## Credits
 
 https://threejs.org/
