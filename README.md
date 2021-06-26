@@ -11,7 +11,7 @@ Not sure if Oculus Browser needs to be configured for WebXR like in the early da
 
 Threejs-VR-Hand-Input uses a subset of three.js r129 to start VR with hand and joints tracking.<br>
 
-Important - Javascript codes for this project are dependent on "WebXR Hand Input Module - Level 1", as of today, is an unstable API (https://www.w3.org/TR/webxr-hand-input-1/). Codes may stop working after Oculus Browser or threejs update. Oculus' experimental WebXR hand tracking release in February 2020 and three.js support have been fantastic with.<br>
+Important - Javascript codes for this project are dependent on "WebXR Hand Input Module - Level 1", as of today, is an unstable API (https://www.w3.org/TR/webxr-hand-input-1/). Codes may stop working after Oculus Browser or threejs update. Oculus' WebXR hand tracking (released February 2020) and three.js support have been fantastic.<br>
 
 ## 1. Minimal Threejs VR Hand Input<br>
 
