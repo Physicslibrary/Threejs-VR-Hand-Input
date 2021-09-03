@@ -32,3 +32,5 @@ An example of left palm-up to make a box visible (open a menus or change variabl
 ## Credits
 
 https://threejs.org/
+
+<br>Copyright (c) 2021 Hartwell Fong
