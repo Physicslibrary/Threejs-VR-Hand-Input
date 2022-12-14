@@ -113,13 +113,13 @@ function init() {
 
 	// hand 1
 
-	hand1 = renderer.xr.getHand( 0 );
+	hand1 = renderer.xr.getHand( 1 );
 	hand1.add( new OculusHandModel( hand1 ) );
 	scene.add( hand1 );
 
 	// hand 2
 
-	hand2 = renderer.xr.getHand( 1 );
+	hand2 = renderer.xr.getHand( 0 );
 	hand2.add( new OculusHandModel( hand2 ) );
 	scene.add( hand2 );
 
